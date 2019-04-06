@@ -1,2 +1,2 @@
 # ddeep
-딥러닝 팀 띱의 공간입니다. 반가워요 ~ ㅋㅋㅋ
+this is deeplearning team's space 

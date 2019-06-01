@@ -14,8 +14,9 @@ from button import click_button
 import threading
 
 button_flag  = [1,1,1,1,1,1]
+feature_list = []
 button_name = ['','evans','hermsworth','jeremy','mark','olsen']#그냥 리스트로 만들어버렸어..
-th = threading.Thread(target = click_button, args = (button_flag,))
+th = threading.Thread(target = click_button, args = (button_flag, feature_list))
 #th.daemon = True
 th.start()
 

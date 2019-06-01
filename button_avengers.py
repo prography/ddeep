@@ -6,15 +6,18 @@ Created on Sun May 26 21:27:24 2019
 """
 
 import augmentation_new
-import train_main
 import os,sys,time
 os.chdir(os.path.dirname(__file__))
 from tkinter import *
 import tkinter as tk
+from classifier import training
 
-pre_image = []
-aug_img = augmentation_new.Make_Data('./avengers/robert', 'robert')
-pre_image.append(aug_img)
+#pre_image = []
+#aug_img = augmentation_new.Make_Data('./avengers/robert', 'robert')
+#pre_image.append(aug_img)
+
+modeldir = './model/20170511-185253.pb'
+
         
 def click_button(button_flag):
 
@@ -28,8 +31,12 @@ def click_button(button_flag):
             button_flag[1] +=1 
             if button_flag[1] == 1:
                 aug_img = augmentation_new.Make_Data('./avengers/evans', 'evans')
-                pre_image.append(aug_img)
-                train_main.image_train(pre_image)
+                #pre_image.append(aug_img)
+                print ("Training Start")
+                obj=training(modeldir, aug_img)
+                get_feature = obj.main_train()
+                feature_list.append(get_feature)
+                print('Getting feature map succeed')
             
         elif (button_flag[1] %2 ==0):
             button1.config(bg="green")
@@ -47,8 +54,12 @@ def click_button(button_flag):
             button_flag[2] +=1
             if button_flag[2] == 1:
                 aug_img = augmentation_new.Make_Data('./avengers/hermsworth', 'hermsworth')
-                pre_image.append(aug_img)
-                train_main.image_train(pre_image)
+                #pre_image.append(aug_img)
+                print ("Training Start")
+                obj=training(modeldir, aug_img)
+                get_feature = obj.main_train()
+                feature_list.append(get_feature)
+                print('Getting feature map succeed')
             
         elif(button_flag[2] %2 ==0):
             button2.config(bg="green")
@@ -64,8 +75,12 @@ def click_button(button_flag):
             button_flag[3] += 1
             if button_flag[3] == 1:
                 aug_img = augmentation_new.Make_Data('./avengers/jeremy', 'jeremy')
-                pre_image.append(aug_img)
-                train_main.image_train(pre_image)
+                #pre_image.append(aug_img)
+                print ("Training Start")
+                obj=training(modeldir, aug_img)
+                get_feature = obj.main_train()
+                feature_list.append(get_feature)
+                print('Getting feature map succeed')
                 
         
         elif(button_flag[3] %2 ==0):
@@ -82,8 +97,12 @@ def click_button(button_flag):
             button_flag[4] += 1
             if button_flag[4] == 1:
                 aug_img = augmentation_new.Make_Data('./avengers/mark', 'mark')
-                pre_image.append(aug_img)
-                train_main.image_train(pre_image)
+                #pre_image.append(aug_img)
+                print ("Training Start")
+                obj=training(modeldir, aug_img)
+                get_feature = obj.main_train()
+                feature_list.append(get_feature)
+                print('Getting feature map succeed')
                 
         
         elif(button_flag[4]%2 ==0):
@@ -101,8 +120,12 @@ def click_button(button_flag):
             button_flag[5] += 1
             if button_flag[5] == 1:
                 aug_img = augmentation_new.Make_Data('./avengers/olsen', 'olsen')
-                pre_image.append(aug_img)
-                train_main.image_train(pre_image)
+                #pre_image.append(aug_img)
+                print ("Training Start")
+                obj=training(modeldir, aug_img)
+                get_feature = obj.main_train()
+                feature_list.append(get_feature)
+                print('Getting feature map succeed')
                 
             
         elif(button_flag[5] %2 ==0):

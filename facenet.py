@@ -95,6 +95,7 @@ def get_image_paths_and_labels(dataset):
         image_paths_flat += dataset[i].images
         #labels_flat += [i] * len(dataset[i].image_paths)
         labels_flat += [i] * len(dataset[i].images)
+
     return image_paths_flat, labels_flat
 
 def shuffle_examples(image_paths, labels):

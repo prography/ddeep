@@ -32,6 +32,7 @@ from subprocess import Popen, PIPE
 import tensorflow as tf
 from tensorflow.python.framework import ops
 import numpy as np
+from numpy.linalg import norm
 from scipy import misc
 from sklearn.model_selection import KFold
 from scipy import interpolate
@@ -563,3 +564,18 @@ def write_arguments_to_file(args, filename):
     with open(filename, 'w') as f:
         for key, value in vars(args).iteritems():
             f.write('%s: %s\n' % (key, str(value)))
+
+def cos_sim(A, B):
+    return np.dot(A, B) / (norm(A) * norm(B))
+
+def check_features(feature_list, emb_array):
+    cos_sim = 0
+    name = ""
+    for i in range(len(feature_list)):
+        cos_temp = cos_sim(feature_list[i].feature, emb_array)
+        cos_sim = np.max(cos_temp, cos_sim)
+        
+        if(cos_sim != cos_temp)
+            name = feature_list[i].name
+
+    return name, cos_sim

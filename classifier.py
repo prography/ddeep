@@ -53,6 +53,7 @@ class training:
                     emb_array[start_index:end_index, :] = sess.run(embeddings, feed_dict=feed_dict)
                     
                 
+<<<<<<< HEAD
                 '''
                 classifier_file_name = os.path.expanduser(self.classifier_filename)
 
@@ -69,3 +70,21 @@ class training:
                     pickle.dump((model, class_names), outfile)
                 '''              
         return feature_map(self.aug_image.name, emb_array)
+=======
+#'''
+#                classifier_file_name = os.path.expanduser(self.classifier_filename)
+#
+#                # Training Started
+#                print('Training Started')
+#                model = SVC(kernel='linear', probability=True)
+#                model.fit(emb_array, label)
+#
+#                #class_names = [cls.name.replace('_', ' ') for cls in img_data]
+#                class_names = [cls.name.replace('_', ' ') for cls in pre_image]
+#
+#                # Saving model
+#                with open(classifier_file_name, 'wb') as outfile:
+#                    pickle.dump((model, class_names), outfile)
+#'''
+                return feature_map(self.aug_image.name, emb_array)
+>>>>>>> 9a92b31f035eca917eaf7cd22eeabfefed1df57c

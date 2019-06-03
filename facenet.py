@@ -575,7 +575,7 @@ def check_features(feature_list, emb_array):
         cos_temp = cos_sim(feature_list[i].feature, emb_array)
         cos_sim = np.max(cos_temp, cos_sim)
         
-        if(cos_sim != cos_temp)
+        if(cos_sim != cos_temp):
             name = feature_list[i].name
 
     return name, cos_sim

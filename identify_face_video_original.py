@@ -10,17 +10,17 @@ import detect_face
 import os
 import time
 import pickle
-from button import click_button
+from button_avengers import click_button
 import threading
 
 button_flag  = [1,1,1,1,1,1]
 feature_list = []
 button_name = ['','evans','hermsworth','jeremy','mark','olsen']#그냥 리스트로 만들어버렸어..
 th = threading.Thread(target = click_button, args = (button_flag, feature_list))
-#th.daemon = True
+th.daemon = True
 th.start()
 
-input_video="robert_video.mp4"
+input_video="input_video.mp4"
 modeldir = './model/20170511-185253.pb'
 classifier_filename = './class/classifier.pkl'
 npy='./npy'

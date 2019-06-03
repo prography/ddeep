@@ -16,10 +16,11 @@ from classifier import training
 #aug_img = augmentation_new.Make_Data('./avengers/robert', 'robert')
 #pre_image.append(aug_img)
 
-modeldir = './model/20170511-185253.pb'
+
 
         
-def click_button(button_flag):
+def click_button(button_flag, feature_list):
+    modeldir = './model/20170511-185253.pb'
 
     def click1():    
         """
@@ -139,7 +140,7 @@ def click_button(button_flag):
     frame1.pack(side=tk.TOP, fill=tk.X)
     
     # pick a (small) image file you have in the working directory ...
-    filename1 = "C:/Facenet-Real-time-Tensorflow/avengers/evans/evans.jpg"
+    filename1 = os.path.join(os.getcwd(),'avengers/evans/evans.gif')
     photo1 = tk.PhotoImage(file=filename1)
     # create the image button, image is above (top) the optional text
     button1 = tk.Button(frame1, compound=tk.TOP, width=200, height=200, image=photo1,
@@ -148,7 +149,7 @@ def click_button(button_flag):
     # save the button's image from garbage collection (needed?)
     button1.image = photo1
 
-    filename2= "C:/Facenet-Real-time-Tensorflow/avengers/hermsworth/hermsworth.jpg"
+    filename2 = os.path.join(os.getcwd(), 'avengers/hermsworth/hermsworth.gif')
     photo2 = tk.PhotoImage(file=filename2)
     # create the image button, image is above (top) the optional text
     button2 = tk.Button(frame1, compound=tk.TOP, width=200, height=200, image=photo2,
@@ -157,7 +158,7 @@ def click_button(button_flag):
     # save the button's image from garbage collection (needed?)
     button2.image = photo2
 
-    filename3= "C:/Facenet-Real-time-Tensorflow/avengers/jeremy/jeremy.jpg"
+    filename3= os.path.join(os.getcwd(), 'avengers/jeremy/jeremy.gif')
     photo3 = tk.PhotoImage(file=filename3)
     # create the image button, image is above (top) the optional text
     button3 = tk.Button(frame1, compound=tk.TOP, width=200, height=200, image=photo3,
@@ -166,7 +167,7 @@ def click_button(button_flag):
     # save the button's image from garbage collection (needed?)
     button3.image = photo3
     
-    filename4= "C:/Facenet-Real-time-Tensorflow/avengers/mark/mark.jpg"
+    filename4= os.path.join(os.getcwd(), 'avengers/mark/mark.gif')
     photo4 = tk.PhotoImage(file=filename4)
     # create the image button, image is above (top) the optional text
     button4 = tk.Button(frame1, compound=tk.TOP, width=200, height=200, image=photo4,
@@ -175,7 +176,7 @@ def click_button(button_flag):
     # save the button's image from garbage collection (needed?)
     button4.image = photo4
 
-    filename5= "C:/Facenet-Real-time-Tensorflow/avengers/olsen/olsen.jpg"
+    filename5 = os.path.join(os.getcwd(), 'avengers/olsen/olsen.gif')
     photo5 = tk.PhotoImage(file=filename5)
     # create the image button, image is above (top) the optional text
     button5 = tk.Button(frame1, compound=tk.TOP, width=200, height=200, image=photo5,

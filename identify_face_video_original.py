@@ -119,32 +119,38 @@ with tf.Graph().as_default():
                         scaled_reshape.append(scaled[i].reshape(-1,input_image_size,input_image_size,3))
                         feed_dict = {images_placeholder: scaled_reshape[i], phase_train_placeholder: False}
                         emb_array[0, :] = sess.run(embeddings, feed_dict=feed_dict)
-                        predictions = model.predict_proba(emb_array)
-                        best_class_indices = np.argmax(predictions, axis=1)
-                        best_class_probabilities = predictions[np.arange(len(best_class_indices)), best_class_indices]
                         
-                        print(best_class_indices,' with accuracy ',best_class_probabilities)
+                        img_data = facenet.check_features(feature_list, emb_array[0], {"name" : "", "cos_sim" : 0}, 0)
                         
-                        if best_class_probabilities>0.60:#이정도는 되어야 본인이라고 생각됨 0.53은 너무 낮아
+#                        predictions = model.predict_proba(emb_array)
+#                        best_class_indices = np.argmax(predictions, axis=1)
+#                        best_class_probabilities = predictions[np.arange(len(best_class_indices)), best_class_indices]
+
+#                        print(best_class_indices,' with accuracy ',best_class_probabilities)
+
+#                        if best_class_probabilities>0.60:#이정도는 되어야 본인이라고 생각됨 0.53은 너무 낮아
+                        if img_data["cos_sim"] >= 0.6:
                             #초록 사각형치기
                             cv2.rectangle(frame, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 2)    #boxing face
                             
                             #plot result idx under box
                             text_x = bb[i][0]
                             text_y = bb[i][3] + 20
-                            print('Result Indices: ', best_class_indices[0])
+#                            print('Result Indices: ', best_class_indices[0])
                             print(class_names)#여기서부터 HumanNames를 class_names로 바꿨음
-                            for H_i in class_names:
-                                if H_i == class_names[best_class_indices[0]]:
-                                    result_names = class_names[best_class_indices[0]]
-                                    cv2.putText(frame, result_names, (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL,
-                                                1, (0, 0, 255), thickness=1, lineType=2)
-                                    if (H_i in button_name) and (button_flag[button_name.index(H_i)]%2 == 1):
-                                        frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
-                                    elif H_i not in button_name:
-                                        frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
-                                    
-                                    break
+#                            for H_i in class_names:
+#                                if H_i == class_names[best_class_indices[0]]:
+#                                    result_names = class_names[best_class_indices[0]]
+#                                    cv2.putText(frame, result_names, (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL,
+#                                                1, (0, 0, 255), thickness=1, lineType=2)
+                            cv2.putText(frame, img_data["name"], (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL,
+                                        1, (0, 0, 255), thickness=1, lineType=2)
+                            if (H_i in button_name) and (button_flag[button_name.index(H_i)]%2 == 1):
+                                frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
+                            elif H_i not in button_name:
+                                frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
+                            
+                            break
                  
                         else:                           
                             frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(frame[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))

@@ -568,23 +568,13 @@ def write_arguments_to_file(args, filename):
 def cos_sim(A, B):
     return np.dot(A, B) / (norm(A) * norm(B))
 
-<<<<<<< HEAD
-def check_features(feature_list, emb_array):
-    cos_sim = 0
-    name = ""
-    for i in range(len(feature_list)):
-        cos_temp = cos_sim(feature_list[i].feature, emb_array)
-        cos_sim = np.max(cos_temp, cos_sim)
-        
-        if(cos_sim != cos_temp):
-            name = feature_list[i].name
-=======
+
 def check_features(feature_list, emb_array, img_data, idx):
     if idx == len(feature_list):
         return img_data
 
     cos_temp = cos_sim(feature_list[idx].feature, emb_array)
->>>>>>> 9a92b31f035eca917eaf7cd22eeabfefed1df57c
+
 
     if img_data["cos_sim"] < cos_temp:
         img_data["cos_sim"] = cos_temp

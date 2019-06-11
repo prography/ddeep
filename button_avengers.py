@@ -10,6 +10,8 @@ import os,sys,time
 os.chdir(os.path.dirname(__file__))
 from tkinter import *
 import tkinter as tk
+from PIL import Image
+from PIL import ImageTk
 from classifier import training
 
 #pre_image = []
@@ -150,7 +152,13 @@ def click_button(button_flag, feature_list):
     button1.image = photo1
 
     filename2 = os.path.join(os.getcwd(), 'avengers/hermsworth/hermsworth.gif')
+    '''
+    pil_photo2 = Image.open(filename2)
+    pil_photo2 = pil_photo2.resize((200,200), Image.ANTIALIAS)
+    photo2 = tk.PhotoImage(pil_photo2)
+    '''
     photo2 = tk.PhotoImage(file=filename2)
+
     # create the image button, image is above (top) the optional text
     button2 = tk.Button(frame1, compound=tk.TOP, width=200, height=200, image=photo2,
                         text="optional text", bg='green', command=click2)

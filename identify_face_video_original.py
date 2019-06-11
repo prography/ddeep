@@ -21,11 +21,8 @@ th.daemon = True
 th.start()
 
 input_video="input_video.mp4"
-modeldir = './model/20170511-185253.pb'
-classifier_filename = './class/classifier.pkl'
+modeldir = './model/20180402-114759.pb'
 npy='./npy'
-
-pre_img="./pre_img"
 
 with tf.Graph().as_default():
     gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.6)
@@ -39,7 +36,6 @@ with tf.Graph().as_default():
         factor = 0.709  # scale factor
         margin = 44
         frame_interval = 3
-        batch_size = 1000
         image_size = 182
         input_image_size = 160
         
@@ -54,11 +50,6 @@ with tf.Graph().as_default():
         embeddings = tf.get_default_graph().get_tensor_by_name("embeddings:0")
         phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("phase_train:0")
         embedding_size = embeddings.get_shape()[1]
-
-
-        classifier_filename_exp = os.path.expanduser(classifier_filename)
-        with open(classifier_filename_exp, 'rb') as infile:
-            (model, class_names) = pickle.load(infile)
 
         video_capture = cv2.VideoCapture(input_video)
         #video_capture = cv2.VideoCapture(0)

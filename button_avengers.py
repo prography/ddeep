@@ -23,7 +23,7 @@ from preprocesses import preprocesses
 
         
 def click_button(button_flag, feature_list):
-    modeldir = './model/20170511-185253.pb'
+    modeldir = './model/20180402-114759.pb'
 
     def click1():    
         """
@@ -35,8 +35,8 @@ def click_button(button_flag, feature_list):
             button_flag[1] +=1 
             if button_flag[1] == 1:
                 print ("Training Start")
-                preprocesse
-                obj=training(modeldir, aug_img)
+                scale_img = collect_data(os.path.join(os.getcwd(),'avengers/evans/evans.gif'))
+                obj=training(modeldir, scale_img, "evans")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')
@@ -56,10 +56,10 @@ def click_button(button_flag, feature_list):
             button2.config(bg="white")
             button_flag[2] +=1
             if button_flag[2] == 1:
-                aug_img = augmentation_new.Make_Data('./avengers/hermsworth', 'hermsworth')
                 #pre_image.append(aug_img)
                 print ("Training Start")
-                obj=training(modeldir, aug_img)
+                scale_img = collect_data(os.path.join(os.getcwd(),'avengers/hermsworth/hermsworth.gif')
+                obj=training(modeldir, scale_img, "hermsworth")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')
@@ -77,10 +77,10 @@ def click_button(button_flag, feature_list):
             button3.config(bg="white")
             button_flag[3] += 1
             if button_flag[3] == 1:
-                aug_img = augmentation_new.Make_Data('./avengers/jeremy', 'jeremy')
                 #pre_image.append(aug_img)
                 print ("Training Start")
-                obj=training(modeldir, aug_img)
+                scale_img = collect_data(os.path.join(os.getcwd(),'avengers/jeremy/jeremy.gif')
+                obj=training(modeldir, scale_img, "jeremy")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')
@@ -99,10 +99,10 @@ def click_button(button_flag, feature_list):
             button4.config(bg="white")
             button_flag[4] += 1
             if button_flag[4] == 1:
-                aug_img = augmentation_new.Make_Data('./avengers/mark', 'mark')
                 #pre_image.append(aug_img)
                 print ("Training Start")
-                obj=training(modeldir, aug_img)
+                scale_img = collect_data(os.path.join(os.getcwd(),'avengers/mark/mark.gif')
+                obj=training(modeldir, scale_img, "mark")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')
@@ -122,10 +122,10 @@ def click_button(button_flag, feature_list):
             button5.config(bg="white")
             button_flag[5] += 1
             if button_flag[5] == 1:
-                aug_img = augmentation_new.Make_Data('./avengers/olsen', 'olsen')
                 #pre_image.append(aug_img)
                 print ("Training Start")
-                obj=training(modeldir, aug_img)
+                scale_img = collect_data(os.path.join(os.getcwd(),'avengers/olsen/olsen.gif')
+                obj=training(modeldir, scale_img, "olsen")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')

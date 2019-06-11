@@ -2,13 +2,12 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from scipy import misc
-import os
 import tensorflow as tf
 import numpy as np
 import facenet
 import detect_face
 
-def collect_data(self):
+def collect_data(input_image):
     img = misc.imread(input_image)
     if img.ndim < 2:
         print("Unable !")
@@ -16,6 +15,7 @@ def collect_data(self):
         img = facenet.to_rgb(img)
     img = img[:, :, 0 : 3]
 
+    image_size = 160
                                                     
     bounding_boxes, _ = detect_face.detect_face(aug_img, minsize, pnet, rnet,
                                                 onet, threshold, factor)
@@ -46,6 +46,5 @@ def collect_data(self):
         cropped_temp = aug_img[bb_temp[1] : bb_temp[3],
                                bb_temp[0] : bb_temp[2], :]
         scaled_temp = misc.imresize(cropped_temp, (image_size, image_size), interp = 'bilinear')
-        aug_faces.append(scaled_temp)
 
-    return aug_faces
+    return scaled_temp

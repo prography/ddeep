@@ -14,10 +14,14 @@ def collect_data(input_image):
     elif img.ndim == 2:
         img = facenet.to_rgb(img)
     img = img[:, :, 0 : 3]
-
+    
+    minsize = 35  # minimum size of face
+    threshold = [0.6, 0.7, 0.7]  # three steps's threshold
+    factor = 0.709  # scale factor
+    margin = 44
     image_size = 160
                                                     
-    bounding_boxes, _ = detect_face.detect_face(aug_img, minsize, pnet, rnet,
+    bounding_boxes, _ = detect_face.detect_face(img, minsize, pnet, rnet,
                                                 onet, threshold, factor)
     nrof_faces = bounding_boxes.shape[0]
                                                                                                          
@@ -43,7 +47,7 @@ def collect_data(input_image):
         bb_temp[2] = det[2]
         bb_temp[3] = det[3]
 
-        cropped_temp = aug_img[bb_temp[1] : bb_temp[3],
+        cropped_temp = img[bb_temp[1] : bb_temp[3],
                                bb_temp[0] : bb_temp[2], :]
         scaled_temp = misc.imresize(cropped_temp, (image_size, image_size), interp = 'bilinear')
 

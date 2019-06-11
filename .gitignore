@@ -1,4 +1,5 @@
 *.pb
+*.mov
 
 *.pyc
 *.DS_Store

@@ -13,7 +13,7 @@ import tkinter as tk
 from PIL import Image
 from PIL import ImageTk
 from classifier import training
-import preprocesses as prepro
+import preprocess as prepro
 
 #pre_image = []
 #aug_img = augmentation_new.Make_Data('./avengers/robert', 'robert')
@@ -32,19 +32,19 @@ def click_button(button_flag, feature_list):
         # toggle button colors as a test
         if (button_flag[1] % 2 ==1):
             button1.config(bg="white")
-            button_flag[1] +=1 
+            
             if button_flag[1] == 1:
-                print ("Training Start")
+                print("Training Start")
                 scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/evans/evans.gif'))
                 obj = training(modeldir, scale_img, "evans")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')
-            
+    
         elif (button_flag[1] %2 ==0):
             button1.config(bg="green")
-            button_flag[1] +=1 
-            
+        
+        button_flag[1] += 1
             
             
     def click2():
@@ -54,19 +54,21 @@ def click_button(button_flag, feature_list):
         # toggle button colors as a test
         if (button_flag[2] % 2 ==1):
             button2.config(bg="white")
-            button_flag[2] +=1
+
             if button_flag[2] == 1:
                 #pre_image.append(aug_img)
-                print ("Training Start")
+                print("Training Start")
                 scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/hermsworth/hermsworth.gif'))
                 obj = training(modeldir, scale_img, "hermsworth")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')
-            
+    
         elif(button_flag[2] %2 ==0):
             button2.config(bg="green")
-            button_flag[2] += 1
+
+        button_flag[2] += 1
+            
             
     def click3():
         """
@@ -75,20 +77,21 @@ def click_button(button_flag, feature_list):
         # toggle button colors as a test
         if (button_flag[3]%2==1):
             button3.config(bg="white")
-            button_flag[3] += 1
+            
             if button_flag[3] == 1:
                 #pre_image.append(aug_img)
-                print ("Training Start")
+                print("Training Start")
                 scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/jeremy/jeremy.gif'))
                 obj = training(modeldir, scale_img, "jeremy")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')
-                
-        
+    
         elif(button_flag[3] %2 ==0):
             button3.config(bg="green")
-            button_flag[3] += 1    
+
+        button_flag[3] += 1
+   
    
     def click4():
         """
@@ -97,20 +100,20 @@ def click_button(button_flag, feature_list):
         # toggle button colors as a test
         if (button_flag[4]%2 ==1):
             button4.config(bg="white")
-            button_flag[4] += 1
+            
             if button_flag[4] == 1:
                 #pre_image.append(aug_img)
-                print ("Training Start")
+                print("Training Start")
                 scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/mark/mark.gif'))
                 obj = training(modeldir, scale_img, "mark")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')
-                
-        
+    
         elif(button_flag[4]%2 ==0):
             button4.config(bg="green")
-            button_flag[4] += 1
+        
+        button_flag[4] += 1
             
             
     def click5():
@@ -120,20 +123,20 @@ def click_button(button_flag, feature_list):
         # toggle button colors as a test
         if (button_flag[5] %2 ==1):
             button5.config(bg="white")
-            button_flag[5] += 1
+            
             if button_flag[5] == 1:
                 #pre_image.append(aug_img)
-                print ("Training Start")
+                print("Training Start")
                 scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/olsen/olsen.gif'))
                 obj = training(modeldir, scale_img, "olsen")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')
-                
-            
+
         elif(button_flag[5] %2 ==0):
             button5.config(bg="green")
-            button_flag[5] += 1
+            
+        button_flag[5] += 1
             
     
     root = tk.Tk()

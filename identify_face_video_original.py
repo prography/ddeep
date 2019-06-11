@@ -112,7 +112,7 @@ with tf.Graph().as_default():
                         emb_array[0, :] = sess.run(embeddings, feed_dict=feed_dict)
                         
                         img_data = facenet.check_features(feature_list, emb_array[0], {"name" : "", "cos_sim" : 0}, 0)
-                        
+                        print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])
 #                        predictions = model.predict_proba(emb_array)
 #                        best_class_indices = np.argmax(predictions, axis=1)
 #                        best_class_probabilities = predictions[np.arange(len(best_class_indices)), best_class_indices]
@@ -128,7 +128,6 @@ with tf.Graph().as_default():
                             text_x = bb[i][0]
                             text_y = bb[i][3] + 20
 #                            print('Result Indices: ', best_class_indices[0])
-                            print(class_names)#여기서부터 HumanNames를 class_names로 바꿨음
 #                            for H_i in class_names:
 #                                if H_i == class_names[best_class_indices[0]]:
 #                                    result_names = class_names[best_class_indices[0]]

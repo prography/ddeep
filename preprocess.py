@@ -20,6 +20,14 @@ def collect_data(input_image):
     factor = 0.709  # scale factor
     margin = 44
     image_size = 160
+    
+    with tf.Graph().as_default():
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
+        sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, log_device_placement=False))
+        
+        with sess.as_default():
+            pnet, rnet, onet = detect_face.create_mtcnn(sess, './npy')
+    
                                                     
     bounding_boxes, _ = detect_face.detect_face(img, minsize, pnet, rnet,
                                                 onet, threshold, factor)

@@ -13,6 +13,7 @@ import tkinter as tk
 from PIL import Image
 from PIL import ImageTk
 from classifier import training
+from preprocesses import preprocesses
 
 #pre_image = []
 #aug_img = augmentation_new.Make_Data('./avengers/robert', 'robert')
@@ -33,9 +34,8 @@ def click_button(button_flag, feature_list):
             button1.config(bg="white")
             button_flag[1] +=1 
             if button_flag[1] == 1:
-                aug_img = augmentation_new.Make_Data('./avengers/evans', 'evans')
-                #pre_image.append(aug_img)
                 print ("Training Start")
+                preprocesse
                 obj=training(modeldir, aug_img)
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)

@@ -23,7 +23,7 @@ import preprocess as prepro
 
         
 def click_button(button_flag, feature_list):
-    modeldir = './model/20180402-114759.pb'
+    modeldir = './model/20180408-102900.pb'
 
     def click1():    
         """

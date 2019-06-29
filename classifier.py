@@ -42,10 +42,12 @@ class training:
                 
                 image_size = 160
                 emb_array = np.zeros((1, embedding_size))
-                
+                print(image.shape)
+                image = np.expand_dims(image,axis=0)
+                print(image.shape)
                 feed_dict = {images_placeholder: image, phase_train_placeholder: False}
-                emb_array[start_index:end_index, :] = sess.run(embeddings, feed_dict=feed_dict)
-                
+                emb_array[0, : ] = sess.run(embeddings, feed_dict=feed_dict)
+                print("Test -----------------------------------")
                 
 
                 '''

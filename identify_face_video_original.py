@@ -20,7 +20,7 @@ th = threading.Thread(target = click_button, args = (button_flag, feature_list))
 th.daemon = True
 th.start()
 
-input_video="input_video.mp4"
+input_video="captain.mp4"
 modeldir = './model/20180402-114759.pb'
 npy='./npy'
 

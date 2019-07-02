@@ -46,7 +46,6 @@ if nrof_faces>0:
     
     for i in range(nrof_faces):
         emb_array = np.zeros((1, embedding_size))
-        print('zeros emb_array: ', emb_array)
         
         bb[i][0] = det[i][0]
         bb[i][1] = det[i][1]

@@ -7,35 +7,16 @@ import numpy as np
 import facenet
 import detect_face
 import mtcnn
+import cv2
 
-detector = mtcnn.MTCNN()
-image_size = detector.image_size
-input_image_size = detector.input_image_size
 
 def collect_data(input_image):
-    img = misc.imread(input_image)
-    if img.ndim < 2:
-        print("Unable !")
-    elif img.ndim == 2:
-        img = facenet.to_rgb(img)
-    img = img[:, :, 0 : 3]
-    
-    minsize = 35  # minimum size of face
-    threshold = [0.6, 0.7, 0.7]  # three steps's threshold
-    factor = 0.709  # scale factor
-    margin = 44
-    image_size = 160
-    
-    with tf.Graph().as_default():
-        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
-        sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, log_device_placement=False))
-        
-        with sess.as_default():
-            pnet, rnet, onet = detect_face.create_mtcnn(sess, './npy')
-    
+    img = cv2.imread(input_image)
+    detector = mtcnn.MTCNN()
+    image_size = detector.image_size
+    input_image_size = detector.input_image_size
                                                     
-    bounding_boxes, _ = detect_face.detect_face(img, minsize, pnet, rnet,
-                                                onet, threshold, factor)
+    bounding_boxes, img = detector.run_mtcnn(img)
     nrof_faces = bounding_boxes.shape[0]
                                                                                                          
     if nrof_faces > 0:
@@ -52,6 +33,7 @@ def collect_data(input_image):
             index = np.argmax(bounding_box_size - offset_dist_squared * 2.0)
             det = det[index, :]
                 
+        det = np.squeeze(det)
         bb_temp = np.zeros(4, dtype = np.int32)
 
         bb_temp[0] = det[0]
@@ -66,6 +48,6 @@ def collect_data(input_image):
         scaled_temp = cv2.resize(scaled_temp, (input_image_size, input_image_size),
                        interpolation = cv2.INTER_CUBIC)
         scaled_temp = facenet.prewhiten(scaled_temp)
-        scaled_temp.reshape(-1, input_image_size, input_image_size, 3)
+        scaled_reshape = scaled_temp.reshape(-1, input_image_size, input_image_size, 3)
 
-    return scaled_temp
+    return scaled_reshape

@@ -40,7 +40,7 @@ class training:
 
                 print('Extracting features of images for model')
                 
-                image_size = 160
+                image_size = 182
                 emb_array = np.zeros((1, embedding_size))
                 
                 image = np.expand_dims(image,axis=0)

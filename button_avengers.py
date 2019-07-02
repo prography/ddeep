@@ -23,7 +23,7 @@ import preprocess as prepro
 
         
 def click_button(button_flag, feature_list):
-    modeldir = './model/20180408-102900.pb'
+    modeldir = './model/20180402-114759.pb'
 
     def click1():    
         """
@@ -35,8 +35,8 @@ def click_button(button_flag, feature_list):
             
             if button_flag[1] == 1:
                 print("Training Start")
-                scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/evans/evans.gif'))
-                obj = training(modeldir, scale_img, "evans")
+                scale_reshape_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/evans/evans.gif'))
+                obj = training(modeldir, scale_reshape_img, "evans")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')

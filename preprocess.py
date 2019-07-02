@@ -7,6 +7,10 @@ import numpy as np
 import facenet
 import detect_face
 
+detector = mtcnn.MTCNN()
+image_size = detector.image_size
+input_image_size = detector.input_image_size
+
 def collect_data(input_image):
     img = misc.imread(input_image)
     if img.ndim < 2:
@@ -37,17 +41,6 @@ def collect_data(input_image):
         det = bounding_boxes[:, 0 : 4]
         img_size = np.asarray(img.shape)[0 : 2]
 
-        if nrof_faces > 1:
-            bounding_box_size = (det[:, 2] - det[:, 0]) * (det[:, 3] - det[:, 1])
-            img_center = img_size / 2
-            offsets = np.vstack([(det[:, 0] + det[:, 2]) / 2 - img_center[1],
-                                 (det[:, 1] + det[:, 3]) / 2 - img_center[0]])
-
-            offset_dist_squared = np.sum(np.power(offsets, 2.0), 0)
-            index = np.argmax(bounding_box_size - offset_dist_squared * 2.0)
-            det = det[index, :]
-
-        det = np.squeeze(det)
         bb_temp = np.zeros(4, dtype = np.int32)
 
         bb_temp[0] = det[0]
@@ -57,6 +50,11 @@ def collect_data(input_image):
 
         cropped_temp = img[bb_temp[1] : bb_temp[3],
                                bb_temp[0] : bb_temp[2], :]
+        cropped_temp = facenet.flip(cropped_temp, False)
         scaled_temp = misc.imresize(cropped_temp, (image_size, image_size), interp = 'bilinear')
+        scaled_temp = cv2.resize(scaled_temp, (input_image_size, input_image_size),
+                       interpolation = cv2.INTER_CUBIC)
+        scaled_temp = facenet.prewhiten(scaled_temp)
+        scaled_temp.reshape(-1, input_image_size, input_image_size, 3)
 
     return scaled_temp

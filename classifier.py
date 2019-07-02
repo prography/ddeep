@@ -17,10 +17,10 @@ class feature_map:
         
 
 class training:
-    def __init__(self, modeldir, scale_img, name):
+    def __init__(self, modeldir, scale_reshape_img, name):
         #self.datadir = datadir
         self.modeldir = modeldir
-        self.scale_img = scale_img
+        self.scale_reshape_img = scale_reshape_img
         self.name = name
         #self.classifier_filename = classifier_filename
 
@@ -30,7 +30,7 @@ class training:
                 #img_data = facenet.get_dataset_all(self.datadir)
                 #path, label = facenet.get_image_paths_and_labels(img_data)
                 #print('Classes: %d' % len(img_data))
-                image = self.scale_img
+                image = self.scale_reshape_img
 
                 facenet.load_model(self.modeldir)
                 images_placeholder = tf.get_default_graph().get_tensor_by_name("input:0")
@@ -42,9 +42,9 @@ class training:
                 
                 image_size = 160
                 emb_array = np.zeros((1, embedding_size))
-                print(image.shape)
+                
                 image = np.expand_dims(image,axis=0)
-                print(image.shape)
+                
                 feed_dict = {images_placeholder: image, phase_train_placeholder: False}
                 emb_array[0, : ] = sess.run(embeddings, feed_dict=feed_dict)
                 print("Test -----------------------------------")

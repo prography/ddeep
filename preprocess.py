@@ -6,6 +6,7 @@ import tensorflow as tf
 import numpy as np
 import facenet
 import detect_face
+import mtcnn
 
 detector = mtcnn.MTCNN()
 image_size = detector.image_size
@@ -41,6 +42,16 @@ def collect_data(input_image):
         det = bounding_boxes[:, 0 : 4]
         img_size = np.asarray(img.shape)[0 : 2]
 
+        if nrof_faces > 1:
+            bounding_box_size = (det[:, 2] - det[:, 0]) * (det[:, 3] - det[:, 1])
+            img_center = img_size / 2
+            offsets = np.vstack([(det[:, 0] + det[:, 2]) / 2 - img_center[1],
+                                 (det[:, 1] + det[:, 3]) / 2 - img_center[0]])
+                    
+            offset_dist_squared = np.sum(np.power(offsets, 2.0), 0)
+            index = np.argmax(bounding_box_size - offset_dist_squared * 2.0)
+            det = det[index, :]
+                
         bb_temp = np.zeros(4, dtype = np.int32)
 
         bb_temp[0] = det[0]

@@ -16,12 +16,12 @@ import mtcnn
 
 button_flag  = [1,1,1,1,1,1]
 feature_list = []
-button_name = ['','evans','hermsworth','jeremy','mark','olsen']#그냥 리스트로 만들어버렸어..
+button_name = ['','evans','hermsworth','jeremy','mark','olsen']
 th = threading.Thread(target = click_button, args = (button_flag, feature_list))
 th.daemon = True
 th.start()
 
-input_video="captain.mp4"
+input_video="input_video.mp4"
 modeldir = './model/20180402-114759.pb'
 npy='./npy'
 
@@ -47,7 +47,7 @@ while True:
     print(button_flag)
     ret, frame = video_capture.read()
     
-    bounding_boxes = detector.run_mtcnn(frame)
+    bounding_boxes, frame = detector.run_mtcnn(frame)
     nrof_faces = bounding_boxes.shape[0]
     print('Detected_FaceNum: %d' % nrof_faces)
 
@@ -93,21 +93,15 @@ while True:
 
 #                        print(best_class_indices,' with accuracy ',best_class_probabilities)
 
-#                        if best_class_probabilities>0.60:#이정도는 되어야 본인이라고 생각됨 0.53은 너무 낮아
+#                        if best_class_probabilities>0.60:#ÀÌÁ¤µµ´Â µÇ¾î¾ß º»ÀÎÀÌ¶ó°í »ý°¢µÊ 0.53Àº ³Ê¹« ³·¾Æ
             if img_data["cos_sim"] >= 0.6:
-                #초록 사각형치기
+              
                 if button_flag[button_name.index(img_data["name"])]%2 == 0:
                     cv2.rectangle(frame, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 2)    #boxing face
                     
                     #plot result idx under box
                     text_x = bb[i][0]
                     text_y = bb[i][3] + 20
-    #                            print('Result Indices: ', best_class_indices[0])
-    #                            for H_i in class_names:
-    #                                if H_i == class_names[best_class_indices[0]]:
-    #                                    result_names = class_names[best_class_indices[0]]
-    #                                    cv2.putText(frame, result_names, (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL,
-    #                                                1, (0, 0, 255), thickness=1, lineType=2)
                     cv2.putText(frame, img_data["name"], (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL,
                                 1, (0, 0, 255), thickness=1, lineType=2)
                 else:

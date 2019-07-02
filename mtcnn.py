@@ -31,5 +31,5 @@ class MTCNN:
         img = img[:, :, 0:3]
         bounding_boxes, _ = detect_face.detect_face(img, self.minsize, self.pnet, self.rnet, self.onet, self.threshold, self.factor)
        
-        return bounding_boxes
+        return bounding_boxes, img
                 

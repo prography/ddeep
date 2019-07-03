@@ -21,7 +21,7 @@ th = threading.Thread(target = click_button, args = (button_flag, feature_list))
 th.daemon = True
 th.start()
 
-input_video="input_video.mp4"
+input_video="captain.mp4"
 modeldir = './model/20180402-114759.pb'
 npy='./npy'
 
@@ -94,7 +94,7 @@ while True:
 #                        print(best_class_indices,' with accuracy ',best_class_probabilities)
 
 #                        if best_class_probabilities>0.60:#ÀÌÁ¤µµ´Â µÇ¾î¾ß º»ÀÎÀÌ¶ó°í »ý°¢µÊ 0.53Àº ³Ê¹« ³·¾Æ
-            if img_data["cos_sim"] >= 0.6:
+            if img_data["cos_sim"] >= 0.5:
               
                 if button_flag[button_name.index(img_data["name"])]%2 == 0:
                     cv2.rectangle(frame, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 2)    #boxing face

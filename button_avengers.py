@@ -35,7 +35,7 @@ def click_button(button_flag, feature_list):
             
             if button_flag[1] == 1:
                 print("Training Start")
-                scale_reshape_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/evans/evans.gif'))
+                scale_reshape_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/evans/evans_p.jpg'))
                 obj = training(modeldir, scale_reshape_img, "evans")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
@@ -58,7 +58,7 @@ def click_button(button_flag, feature_list):
             if button_flag[2] == 1:
                 #pre_image.append(aug_img)
                 print("Training Start")
-                scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/hermsworth/hermsworth.gif'))
+                scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/hermsworth/hermsworth_p.jpg'))
                 obj = training(modeldir, scale_img, "hermsworth")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
@@ -81,7 +81,7 @@ def click_button(button_flag, feature_list):
             if button_flag[3] == 1:
                 #pre_image.append(aug_img)
                 print("Training Start")
-                scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/jeremy/jeremy.gif'))
+                scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/jeremy/jeremy_p.jpg'))
                 obj = training(modeldir, scale_img, "jeremy")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
@@ -104,7 +104,7 @@ def click_button(button_flag, feature_list):
             if button_flag[4] == 1:
                 #pre_image.append(aug_img)
                 print("Training Start")
-                scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/mark/mark.gif'))
+                scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/mark/mark_p.jpg'))
                 obj = training(modeldir, scale_img, "mark")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
@@ -127,7 +127,7 @@ def click_button(button_flag, feature_list):
             if button_flag[5] == 1:
                 #pre_image.append(aug_img)
                 print("Training Start")
-                scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/olsen/olsen.gif'))
+                scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/olsen/olsen_p.jpg'))
                 obj = training(modeldir, scale_img, "olsen")
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)

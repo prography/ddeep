@@ -25,7 +25,7 @@ class MTCNN:
                 self.input_image_size = 160        
         
     def run_mtcnn(self, img):
-        img = cv2.resize(img, (0,0), fx=0.5, fy=0.5)
+        img = cv2.resize(img, (0,0), fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
         if img.ndim == 2:
             img = facenet.to_rgb(img)
         img = img[:, :, 0:3]

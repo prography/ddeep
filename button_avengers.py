@@ -52,7 +52,7 @@ def click_button(button_flag, feature_list):
         filename.append(os.path.join(os.getcwd(), sub_filename[idx]))
         photo.append(tk.PhotoImage(file = filename[idx]).subsample(5))
         button.append(tk.Button(photo_frame, width = 130, height = 130, image = photo[idx], text = name[idx],
-                                command = partial(btn_event, filename[idx], name[idx])))
+                                command = partial(btn_event, idx, filename[idx], name[idx])))
         button[idx].pack(side = tk.LEFT, padx = 25, pady = 10)
         button[idx].image = photo[idx]
 

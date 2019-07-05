@@ -11,13 +11,13 @@ from functools import partial
 def click_button(button_flag, feature_list):
     modeldir = './model/20180402-114759.pb'
 
-    def btn_event(idx, filename):
+    def btn_event(idx, filename, name):
         if (button_flag[idx] % 2 == 1):
             button_flag[idx] += 1
             if button_flag[idx] == 1:
                 print ("Training Start")
                 scale_img = prepro.collect_data(filename)
-                obj = training(modeldir, scale_img, "olsen")
+                obj = training(modeldir, scale_img, name)
                 get_feature = obj.main_train()
                 feature_list.append(get_feature)
                 print('Getting feature map succeed')
@@ -51,7 +51,8 @@ def click_button(button_flag, feature_list):
     for idx in range(len(sub_filename)):
         filename.append(os.path.join(os.getcwd(), sub_filename[idx]))
         photo.append(tk.PhotoImage(file = filename[idx]).subsample(5))
-        button.append(tk.Button(photo_frame, width = 130, height = 130, image = photo[idx], text = name[idx]))
+        button.append(tk.Button(photo_frame, width = 130, height = 130, image = photo[idx], text = name[idx],
+                                command = partial(btn_event, filename[idx], name[idx])))
         button[idx].pack(side = tk.LEFT, padx = 25, pady = 10)
         button[idx].image = photo[idx]
 

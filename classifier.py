@@ -9,11 +9,6 @@ import math
 import pickle
 from sklearn.svm import SVC
 import sys
-
-class feature_map:
-    def __init__(self, name, feature):
-        self.name = name
-        self.feature = feature
         
 
 class training:
@@ -65,5 +60,5 @@ class training:
                 with open(classifier_file_name, 'wb') as outfile:
                     pickle.dump((model, class_names), outfile)
                 '''              
-        return feature_map(self.name, emb_array)
+        return emb_array
 

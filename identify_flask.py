@@ -10,7 +10,7 @@ import detect_face
 import os
 import time
 import pickle
-from button_avengers import click_button
+from button_avengers_flask import click_button
 import threading
 import mtcnn
 from flask import jsonify
@@ -65,7 +65,7 @@ while True:
         bb = np.zeros((nrof_faces,4), dtype=np.int32)
 
         for i in range(nrof_faces):
-            emb_array = np.zeros((1, embedding_size))
+            #emb_array = np.zeros((1, embedding_size))
 
             bb[i][0] = det[i][0]
             bb[i][1] = det[i][1]
@@ -89,14 +89,19 @@ while True:
             
             URL = "http://127.0.0.1:5000/video"
             tolist_img = scaled_reshape[i].tolist()
+            tolist_feature = [x.tolist]
             json_feed = {'images_placeholder': tolist_img}
             response = requests.post(URL, data = json_feed)
             
             '''
             feed_dict = {images_placeholder: scaled_reshape[i], phase_train_placeholder: False}
             emb_array[0, :] = sess.run(embeddings, feed_dict=feed_dict)
-            '''
+            
             img_data = facenet.check_features(feature_list, emb_array[0], {"name" : "", "cos_sim" : 0}, 0)
+            '''
+            
+            img_data = json.loads(response.json())
+            
             print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])
 
             if img_data["cos_sim"] >= 0.5:

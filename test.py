@@ -81,19 +81,17 @@ if nrof_faces > 0:
                                interpolation=cv2.INTER_CUBIC)
         scaled[i] = facenet.prewhiten(scaled[i])
         scaled_reshape.append(scaled[i].reshape(-1,input_image_size,input_image_size,3))
-        
+        print(scaled_reshape[i].shape)
         URL = "http://127.0.0.1:5000/video"
         tolist_img = scaled_reshape[i].tolist()
         json_feed = {'images_placeholder': tolist_img}
-        response = requests.post(URL, data = json_feed)
-        res = response.json()
-        print(res)
+        response = requests.post(URL, json = json_feed)
+        print(response)
+        img_data = response.json()
+       
+        print('img_data type: ', type(img_data))
+        print('img_data :', img_data)
         
-        feed_dict = {images_placeholder: scaled_reshape[i], phase_train_placeholder: False}
-        
-        emb_array[0, :] = sess.run(embeddings, feed_dict=feed_dict)
-        
-        img_data = facenet.check_features(feature_list, emb_array[0], {"name" : "", "cos_sim" : 0}, 0)
         print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])
 
         if img_data["cos_sim"] >= 0.5:

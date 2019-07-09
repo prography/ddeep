@@ -83,7 +83,11 @@ while True:
             scaled[i] = facenet.prewhiten(scaled[i])
             scaled_reshape.append(scaled[i].reshape(-1,input_image_size,input_image_size,3))
             feed_dict = {images_placeholder: scaled_reshape[i], phase_train_placeholder: False}
+            print("scaled_reshape type: ",type(scaled_reshape[i]))
+            print("scaled_reshape shape", scaled_reshape[i].shape)
+            print(scaled_reshape[i])
             emb_array[0, :] = sess.run(embeddings, feed_dict=feed_dict)
+            print("emb_array type:", type(emb_array))
             
             img_data = facenet.check_features(feature_list, emb_array[0], {"name" : "", "cos_sim" : 0}, 0)
             print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])

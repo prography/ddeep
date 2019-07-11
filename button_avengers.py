@@ -7,6 +7,8 @@ from classifier import training
 import preprocess as prepro
 from functools import partial
 import cv2
+import mtcnn
+import numpy as np
 
 
 
@@ -31,24 +33,51 @@ cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
+detector = mtcnn.MTCNN()
+
 root = tk.Tk()
 root.geometry("900x600+400+150")
 
-main_frame = Frame(root)
+main_frame = tk.Frame(root)
 main_frame.pack(fill = tk.X)
 
 mv_label = tk.Label(main_frame)
 mv_label.pack(side = tk.LEFT)
 
+face_label = tk.Label(main_frame)
+face_label.pack(side = tk.LEFT)
+
 def show_frame():
     _, frame = cap.read()
     frame = cv2.flip(frame, 1)
     cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
-    img = Image.fromarray(cv2image)
-    imgtk = ImageTk.PhotoImage(image=img)
-    mv_label.imgtk = imgtk
-    mv_label.configure(image=imgtk)
+    
+    bounding_boxes, _ = detector.run_mtcnn(cv2image)
+    nrof_faces = bounding_boxes.shape[0]
+
+    if nrof_faces > 0:
+        det = bounding_boxes[:, 0:4]
+        bb = np.zeros((nrof_faces,4), dtype = np.int32)
+
+        for i in range(nrof_faces):
+            bb[i][0] = det[i][0]
+            bb[i][1] = det[i][1]
+            bb[i][2] = det[i][2]
+            bb[i][3] = det[i][3]
+
+            cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][0] + bb[i][2], bb[i][1] + bb[i][3]), (0, 255, 0), 3) 
+    
+            face = cv2image[bb[i][1] : bb[i][1] + bb[i][3], 
+                            bb[i][0] : bb[i][0] + bb[i][2]]
+
+    webcam_img = ImageTk.PhotoImage(image = Image.fromarray(cv2image))
+    mv_label.imgtk = webcam_img
+    mv_label.configure(image = webcam_img)
     mv_label.after(10, show_frame)
+
+    face_img = ImageTk.PhotoImage(image = Image.fromarray(face))
+    face_label.imgtk = face_img
+    face_label.configure(image = face_img)
 
 show_frame()
 
@@ -58,11 +87,6 @@ name = ["evans", "hermsworth", "jeremy", "mark", "olsen"]
 filename = []
 photo = []
 button = []
-
-arrow_img = tk.PhotoImage(file = os.path.join(os.getcwd(), "arrow.png")).subsample(6)
-start_btn = tk.Button(main_frame, width = 130, height = 130, image = arrow_img)
-start_btn.pack(side = tk.LEFT, padx = 80)
-start_btn.image = arrow_img
 
 photo_frame = Frame(root)
 photo_frame.pack(fill = tk.X)

@@ -33,11 +33,9 @@ def button_train(name):
 def video_feature():
     val = request.json
     value = val['images_placeholder']
-    print(value)
-    print(type(value))
     np.set_printoptions(suppress=True,precision=20)
     scaled_reshape = np.array(value)
-    print(scaled_reshape.shape)
+  
     
     sess = tf.Session()
     with sess.as_default():
@@ -54,7 +52,7 @@ def video_feature():
     
     img_data = facenet.check_features(feature_list, embedding_arr[0], {"name" : "", "cos_sim" : 0}, 0)
     print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])
-    
+    img_data["cos_sim"] = img_data["cos_sim"].tolist()
     return jsonify(img_data)
     
 def template_Test():

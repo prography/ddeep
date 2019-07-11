@@ -36,6 +36,22 @@ button_flag  = [1,1,1,1,1,1]
 feature_list = []
 button_name = ['','evans','hermsworth','jeremy','mark','olsen']
 
+def btn_event(idx):
+    if (button_flag[idx] % 2 == 1):
+        button[idx].config(bg = "white")
+        
+        if button_flag[idx] == 1:
+            print("training start")
+            URL = "http://127.0.0.1:5000/button/"+name[idx]
+            print(URL)
+            response = requests.get(URL)
+            print('Getting feature map succeed')
+            
+    elif(button_flag[idx] % 2 == 0):
+        button[idx].config(bg="green")
+    
+    button_flag[idx] += 1
+
 #GUI
 width, height = 600, 600
 
@@ -115,21 +131,19 @@ def show_frame():
                                    interpolation=cv2.INTER_CUBIC)
             scaled[i] = facenet.prewhiten(scaled[i])
             scaled_reshape.append(scaled[i].reshape(-1,input_image_size,input_image_size,3))
-            feed_dict = {images_placeholder: scaled_reshape[i], phase_train_placeholder: False}
+            
             
         #서버로 넘김. 
-            #URL = "http://127.0.0.1:5000/video"
-            #tolist_img = scaled_reshape[i].tolist()
-            #json_feed = {'images_placeholder': tolist_img}
-            #response = requests.post(URL, data = json_feed)
-        #확인 
-            #print("scaled_reshape type: ",type(scaled_reshape[i]))
-            #print("scaled_reshape shape", scaled_reshape[i].shape)
-            #print(scaled_reshape[i])
-            emb_array[0, :] = sess.run(embeddings, feed_dict=feed_dict)
-            #print("emb_array type:", type(emb_array))
+            URL = "http://127.0.0.1:5000/video"
+            tolist_img = scaled_reshape[i].tolist()
+            json_feed = {'images_placeholder': tolist_img}
+            response = requests.post(URL, json = json_feed)
             
-            img_data = facenet.check_features(feature_list, emb_array[0], {"name" : "", "cos_sim" : 0}, 0)
+            img_data= response.json()
+        #확인 
+       
+            
+            #img_data = facenet.check_features(feature_list, emb_array[0], {"name" : "", "cos_sim" : 0}, 0)
 
             
             print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])
@@ -138,9 +152,9 @@ def show_frame():
     #  현재 GUI에서 button부분이랑 연결이 안되서 우선 이렇게 밖으로 뺴서 얼굴부분은 모두 모자이크 처리하도록 했으요  # 
     #                                                                                                        #               
     ##########################################################################################################                                                                                                       
-            cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
+            #cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
            
-            if img_data["cos_sim"] >= 0.5:
+            if img_data["cos_sim"][0] >= 0.5:
                 
                 if button_flag[button_name.index(img_data["name"])]%2 == 0:
                     cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 2)    #boxing face
@@ -154,7 +168,7 @@ def show_frame():
                     cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
                 
             else:                           
-                cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]]  
+                cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
 
     cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGBA)
     #cv2image = cv2.flip(cv2image, 1)
@@ -188,7 +202,8 @@ photo_frame.pack(fill = tk.X)
 for idx in range(len(sub_filename)):
     filename.append(os.path.join(os.getcwd(), sub_filename[idx]))
     photo.append(tk.PhotoImage(file = filename[idx]).subsample(5))
-    button.append(tk.Button(photo_frame, width = 130, height = 130, image = photo[idx], text = name[idx]))
+    button.append(tk.Button(photo_frame, width = 130, height = 130, image = photo[idx], text = name[idx],
+                            command = partial(btn_event, idx)))
     button[idx].pack(side = tk.LEFT, padx = 25, pady = 10)
     button[idx].image = photo[idx]
 

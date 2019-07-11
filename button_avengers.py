@@ -48,11 +48,9 @@ face_label = tk.Label(main_frame)
 face_label.pack(side = tk.LEFT)
 
 def show_frame():
-    _, frame = cap.read()
-    frame = cv2.flip(frame, 1)
-    cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+    _, cv2image = cap.read()
     
-    bounding_boxes, _ = detector.run_mtcnn(cv2image)
+    bounding_boxes, cv2image = detector.run_mtcnn(cv2image)
     nrof_faces = bounding_boxes.shape[0]
 
     if nrof_faces > 0:
@@ -65,11 +63,15 @@ def show_frame():
             bb[i][2] = det[i][2]
             bb[i][3] = det[i][3]
 
-            cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][0] + bb[i][2], bb[i][1] + bb[i][3]), (0, 255, 0), 3) 
+            cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 3) 
     
-            face = cv2image[bb[i][1] : bb[i][1] + bb[i][3], 
-                            bb[i][0] : bb[i][0] + bb[i][2]]
-
+            face = cv2image[bb[i][1] : bb[i][3], 
+                            bb[i][0] : bb[i][2]]
+    
+    cv2image = cv2.flip(cv2image, 1)
+    cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGBA)
+    face = cv2.flip(face, 1)
+    face = cv2.cvtColor(face, cv2.COLOR_BGR2RGBA)
     webcam_img = ImageTk.PhotoImage(image = Image.fromarray(cv2image))
     mv_label.imgtk = webcam_img
     mv_label.configure(image = webcam_img)

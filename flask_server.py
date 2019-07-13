@@ -52,7 +52,8 @@ def video_feature():
     
     img_data = facenet.check_features(feature_list, embedding_arr[0], {"name" : "", "cos_sim" : 0}, 0)
     print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])
-    img_data["cos_sim"] = img_data["cos_sim"].tolist()
+    if img_data["cos_sim"] != 0:
+        img_data["cos_sim"] = img_data["cos_sim"][0]
     return jsonify(img_data)
     
 def template_Test():
@@ -65,5 +66,5 @@ def template_Test():
 
 
 if __name__ =='__main__':
-   app.run(debug=True)
+   app.run(host='0.0.0.0',port=5000,debug=True)
    #서버 실행하는 부분. 

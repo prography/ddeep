@@ -31,10 +31,11 @@ import requests
 input_video="captain.mp4"
 modeldir = './model/20180402-114759.pb'
 npy='./npy'
+server = "http://13.209.70.255:5000/"
 
-button_flag  = [1,1,1,1,1,1]
+button_flag  = [1,1,1,1,1]
 feature_list = []
-button_name = ['','evans','hermsworth','jeremy','mark','olsen']
+button_name = ['evans','hermsworth','jeremy','mark','olsen']
 
 def btn_event(idx):
     if (button_flag[idx] % 2 == 1):
@@ -42,7 +43,7 @@ def btn_event(idx):
         
         if button_flag[idx] == 1:
             print("training start")
-            URL = "http://127.0.0.1:5000/button/"+name[idx]
+            URL = server + "button/"+name[idx]
             print(URL)
             response = requests.get(URL)
             print('Getting feature map succeed')
@@ -134,7 +135,7 @@ def show_frame():
             
             
         #서버로 넘김. 
-            URL = "http://127.0.0.1:5000/video"
+            URL = server + "video"
             tolist_img = scaled_reshape[i].tolist()
             json_feed = {'images_placeholder': tolist_img}
             response = requests.post(URL, json = json_feed)
@@ -154,7 +155,7 @@ def show_frame():
     ##########################################################################################################                                                                                                       
             #cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
            
-            if img_data["cos_sim"][0] >= 0.5:
+            if img_data["cos_sim"] >= 0.5:
                 
                 if button_flag[button_name.index(img_data["name"])]%2 == 0:
                     cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 2)    #boxing face

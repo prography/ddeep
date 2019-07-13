@@ -38,7 +38,7 @@ class training:
                 image_size = 182
                 emb_array = np.zeros((1, embedding_size))
                 
-                image = np.expand_dims(image,axis=0)
+                #image = np.expand_dims(image,axis=0)
                 
                 feed_dict = {images_placeholder: image, phase_train_placeholder: False}
                 emb_array[0, : ] = sess.run(embeddings, feed_dict=feed_dict)

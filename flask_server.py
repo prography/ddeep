@@ -11,9 +11,9 @@ import tensorflow as tf
 import numpy as np
 
 app = Flask(__name__)
-
 modeldir = './model/20180402-114759.pb'
 feature_list = []
+
 
 class feature_map:
     def __init__(self, name, feature):
@@ -22,7 +22,8 @@ class feature_map:
 
 @app.route('/button/<name>')
 def button_train(name):
-    scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/'+name+'/'+name+'_p.jpg'))
+    img = cv2.imread(os.path.join(os.getcwd(),'avengers/'+name+'/'+name+'_p.jpg'))
+    scale_img = prepro.collect_data(img)
     obj = training(modeldir, scale_img, name)
     emb_array = obj.main_train()
     feature_list.append(feature_map(name, emb_array))

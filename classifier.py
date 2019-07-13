@@ -12,11 +12,11 @@ import sys
         
 
 class training:
-    def __init__(self, modeldir, scale_reshape_img, name):
+    def __init__(self, modeldir, scale_reshape_img):
         #self.datadir = datadir
         self.modeldir = modeldir
         self.scale_reshape_img = scale_reshape_img
-        self.name = name
+  
         #self.classifier_filename = classifier_filename
 
     def main_train(self):

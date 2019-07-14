@@ -10,8 +10,7 @@ import mtcnn
 import cv2
 
 
-def collect_data(input_image):
-    img = cv2.imread(input_image)
+def collect_data(img):  
     detector = mtcnn.MTCNN()
     image_size = detector.image_size
     input_image_size = detector.input_image_size
@@ -22,7 +21,7 @@ def collect_data(input_image):
     if nrof_faces > 0:
         det = bounding_boxes[:, 0 : 4]
         img_size = np.asarray(img.shape)[0 : 2]
-
+        
         if nrof_faces > 1:
             bounding_box_size = (det[:, 2] - det[:, 0]) * (det[:, 3] - det[:, 1])
             img_center = img_size / 2

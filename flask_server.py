@@ -11,9 +11,9 @@ import tensorflow as tf
 import numpy as np
 
 app = Flask(__name__)
-
 modeldir = './model/20180402-114759.pb'
 feature_list = []
+
 
 class feature_map:
     def __init__(self, name, feature):
@@ -22,7 +22,8 @@ class feature_map:
 
 @app.route('/button/<name>')
 def button_train(name):
-    scale_img = prepro.collect_data(os.path.join(os.getcwd(),'avengers/'+name+'/'+name+'_p.jpg'))
+    img = cv2.imread(os.path.join(os.getcwd(),'avengers/'+name+'/'+name+'_p.jpg'))
+    scale_img = prepro.collect_data(img)
     obj = training(modeldir, scale_img, name)
     emb_array = obj.main_train()
     feature_list.append(feature_map(name, emb_array))
@@ -52,7 +53,8 @@ def video_feature():
     
     img_data = facenet.check_features(feature_list, embedding_arr[0], {"name" : "", "cos_sim" : 0}, 0)
     print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])
-    img_data["cos_sim"] = img_data["cos_sim"].tolist()
+    if img_data["cos_sim"] != 0:
+        img_data["cos_sim"] = img_data["cos_sim"][0]
     return jsonify(img_data)
     
 def template_Test():
@@ -65,5 +67,5 @@ def template_Test():
 
 
 if __name__ =='__main__':
-   app.run(debug=True)
+   app.run(host='0.0.0.0',port=5000,debug=True)
    #서버 실행하는 부분. 

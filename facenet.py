@@ -569,15 +569,7 @@ def cos_sim(A, B):
     return np.dot(A, B) / (norm(A) * norm(B))
 
 
-def check_features(feature_list, emb_array, img_data, idx):
-    if idx == len(feature_list):
-        return img_data
-
-    cos_temp = cos_sim(feature_list[idx].feature, emb_array)
-
-
-    if img_data["cos_sim"] < cos_temp:
-        img_data["cos_sim"] = cos_temp
-        img_data["name"] = feature_list[idx].name
+def check_features(feature_arr, emb_array):
+    sim = cos_sim(feature_arr, emb_array)
     
-    return check_features(feature_list, emb_array, img_data, idx + 1)
+    return {"name" : "me", "cos_sim" : sim}

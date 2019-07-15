@@ -104,8 +104,10 @@ def show_frame():
     if nrof_faces > 0 and not blur_check:
         if nrof_faces > 1: # 만약 rectangle 처리된 얼굴이 2개 이상이라면 label로 경고 글씨 표시
             warning_label.configure(text = "한 개의 얼굴만 나오도록 해주세요.")
+            learn_btn.configure(state = "disabled")
         else: # 그렇지 않다면 지우고.
             warning_label.configure(text = "")
+            learn_btn.configure(state = "active")
         face = cv2.flip(face, 1)
         face = cv2.cvtColor(face, cv2.COLOR_BGR2RGBA)
         face_img = ImageTk.PhotoImage(image = Image.fromarray(face))

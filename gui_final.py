@@ -1,9 +1,3 @@
-##################################
-#                                #
-#     identify랑 gui부분 연결함.  #                                  
-#                                #   
-##################################
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -39,30 +33,35 @@ width, height = 800, 800
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
 blur_check = True
+face = 0
 
-
-def blur_face():
+def blur_face_btn():
     global blur_check
-    blur_check = True # 현재 blur 상태라는 것을 알림.
+    blur_check = True                      # 현재 blur 상태라는 것을 알림.
     blur_btn.configure(state = "disabled") # blur처리를 누르고 난 뒤 blur 버튼 비활성화
     learn_btn.configure(state = "disabled")
     detect_btn.configure(state = "active") # 얼굴을 찾는 버튼 활성화
 
-def detect_face():
+def detect_face_btn():
     global blur_check
-    blur_check = False # 현재 얼굴을 찾아 rectangle로 표시하는 과정을 진행중임.
-    detect_btn.configure(state = "disabled") # detect_btn 비활성화
-    blur_btn.configure(state = "active") # blur 처리로 다시 돌아갈 수 있도록 활성화.
-    learn_btn.configure(state = "active") # 학습 버튼 활성화.
+    blur_check = False                      # 현재 얼굴을 찾아 rectangle로 표시하는 과정을 진행중임.
+    detect_btn.configure(state = "disabled")# detect_btn 비활성화
+    blur_btn.configure(state = "active")    # blur 처리로 다시 돌아갈 수 있도록 활성화.
+    learn_btn.configure(state = "active")   # 학습 버튼 활성화.
 
-def learn_face(): # 학습 버튼 이벤트 함수. 서버와 연결하면 될듯.
+
+def learn_face_btn():                       # 학습 버튼 이벤트 함수. 서버와 연결하면 될듯.
     global blur_check
-    blur_check = True # 학습 버튼을 누르게 되면 자동적으로 웹캠이 blur 처리 되고 확인할 수 있도록 변경.
+    global face                             # 학습 버튼을 누르게 되면 자동적으로 웹캠이 blur 처리 되고 확인할 수 있도록 변경.
+    URL= server+"learn"
+    face_list=face.tolist()
+    print('Getting feature map succeed')        
+    json_feed = {'face_list':face_list}
+    response=requests.post(URL,json=json_feed)
 
-    URL= server+"learn/"
-    response=requests.get(URL)
-    print('Getting feature map succeed')
+    blur_check = True
     learn_btn.configure(state = "disabled") # 학습 버튼 비활성화.
 
 
@@ -84,16 +83,17 @@ face_label = tk.Label(root)
 face_label.place(x = 100, y = 400)
 
 # 얼굴을 인식하도록 rectangle 처리 하는 버튼. 이 버튼을 누른 후에 얼굴을 학습하는 learn_btn이 활성화됨.
-detect_btn = tk.Button(root, text = "Face Detect", width = 10, height = 8, command = detect_face) 
+detect_btn = tk.Button(root, text = "Face Detect", width = 10, height = 8, command = detect_face_btn) 
 detect_btn.place(x = 350, y = 420)
 
 # 얼굴을 찾고 난뒤 이 버튼을 누르면 잡아낸 얼굴을 서버로 보내도록 하면됨.
-learn_btn = tk.Button(root, text = "Learn", state = "disabled", bg = "green", width = 10, height = 8, command = learn_face)
+learn_btn = tk.Button(root, text = "Learn", state = "disabled", bg = "green", width = 10, height = 8, command = learn_face_btn)
 learn_btn.place(x = 460, y = 420)
 
 # 블러 처리하는 버튼. 처음 시작할 때 블러 처리하며, 학습 하고 난 뒤 내 얼굴을 잘 학습했는지 확인할때도 사용함.
-blur_btn = tk.Button(root, text = "Blur", state = "disabled", width = 10, height = 8, command = blur_face)
+blur_btn = tk.Button(root, text = "Blur", state = "disabled", width = 10, height = 8, command = blur_face_btn)
 blur_btn.place(x = 580, y = 420)
+
 
 
 ########### mtcnn
@@ -116,8 +116,6 @@ embedding_size = embeddings.get_shape()[1]
 print('Start Recognition')
 
 def show_frame():
-    
-
     _, cv2image = cap.read()
     global blur_check
 
@@ -143,17 +141,20 @@ def show_frame():
             bb[i][1] = det[i][1]
             bb[i][2] = det[i][2]
             bb[i][3] = det[i][3]
+            
+
             if blur_check: # True라면 웹캠에 나오는 모든 얼굴 blur 처리
                 cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]] = cv2.blur(cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]], (23,23))
             else: # False라면 웹캠에 나오는 모든 얼굴 위치 좌표에 초록색 사각형 그리기
                 cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 3)
+                global face
+                face = cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]]
             
-            face = cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]]
     #여기부터 add ------------>  
             
-            if bb[i][0] <= 0 or bb[i][1] <= 0 or bb[i][2] >= len(cv2image[0]) or bb[i][3] >= len(cv2image):
-                print('Face is very close! 0:',bb[i][0],'    1:',bb[i][1],'      2:',bb[i][2],'          3:',bb[i][3])
-                continue
+            # if bb[i][0] <= 0 or bb[i][1] <= 0 or bb[i][2] >= len(cv2image[0]) or bb[i][3] >= len(cv2image):
+            #     print('Face is very close! 0:',bb[i][0],'    1:',bb[i][1],'      2:',bb[i][2],'          3:',bb[i][3])
+            #     continue
                 
             cropped.append(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2], :])
             cropped[i] = facenet.flip(cropped[i], False)
@@ -170,21 +171,14 @@ def show_frame():
             tolist_img = scaled_reshape[i].tolist()
             json_feed = {'images_placeholder': tolist_img}
             response = requests.post(URL, json = json_feed)
-            #img_data["name"]="Me!"
-            img_data= response.json()
+            
+            img_data = response.json()
         #확인 
 
             print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])
 
-#######
-"""
-1. img_data["name"]부분에 어떻게 넣는지 모르겠으요..
-2. 이제 버튼 flag가 없으니 cos_sim이 0.5만 넘으면 blur해제되게 하는게 맞다고 생각해서 이렇게 바꿧는데 '주석' 에 원본 있습니다. 
-3.돌아가기는 잘 돌아가는데 blur버튼이 안눌러집니다. 
-
-"""
-           
-            if img_data["cos_sim"] >= 0.5:
+        
+            if img_data["cos_sim"] >= 0.5 and blur_check:
                 cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 2)    #boxing face
                     
                     #plot result idx under box
@@ -204,8 +198,8 @@ def show_frame():
                 else:
                     cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
                 """
-            else:                           
-                cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
+            # else:  이부분이 문제였음. 아마 코사인 유사도가 0이기 때문에 이부분도 같이 실행되서 그런듯.
+            #     cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
 
     cv2image = cv2.flip(cv2image, 1)
     cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGBA)

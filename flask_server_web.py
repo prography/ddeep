@@ -24,11 +24,16 @@ embedding_size = embeddings.get_shape()[1]
 feature_arr = 0
 
 #학습 버튼을 눌렀을 때 한명을 학습하고 그 feature를 feature_arr로 저장
-@app.route('/button', methods = ["POST"])
+@app.route('/learn',methods=["POST"])
 def button_train():
     global feature_arr
-    img = request.json['img']
-    scale_img = prepro.collect_data(img)
+    print("=========================================================================================")
+    img = request.json['face_list']
+    img_np =np.array(img)
+    print(img_np)
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>=============================================")
+    print(type(img_np))
+    scale_img = prepro.collect_data(img_np)
     obj = training(modeldir, scale_img)
     feature_arr = obj.main_train()
     
@@ -58,5 +63,6 @@ def video_feature():
     
 
 if __name__ =='__main__':
-   app.run(host='0.0.0.0',port=5000,debug=True)
+   #app.run(host='0.0.0.0',port=5000,debug=True)
+   app.run(debug=True)
    #서버 실행하는 부분. 

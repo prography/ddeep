@@ -36,7 +36,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
 blur_check = True
 face = 0
-
+learn_check = False
 def blur_face_btn():
     global blur_check
     blur_check = True                      # 현재 blur 상태라는 것을 알림.
@@ -55,12 +55,9 @@ def detect_face_btn():
 def learn_face_btn():                       # 학습 버튼 이벤트 함수. 서버와 연결하면 될듯.
     global blur_check
     global face                             # 학습 버튼을 누르게 되면 자동적으로 웹캠이 blur 처리 되고 확인할 수 있도록 변경.
-    URL= server+"learn"
-    face_list=face.tolist()
-    print('Getting feature map succeed')        
-    json_feed = {'face_list':face_list}
-    response=requests.post(URL,json=json_feed)
-
+   
+    global learn_check
+    learn_check=True
     blur_check = True
     learn_btn.configure(state = "disabled") # 학습 버튼 비활성화.
 
@@ -117,8 +114,7 @@ print('Start Recognition')
 
 def show_frame():
     _, cv2image = cap.read()
-    global blur_check
-
+    global blur_check,learn_check
     #inception_resnet 실행.
     bounding_boxes, cv2image = detector.run_mtcnn(cv2image)
     nrof_faces = bounding_boxes.shape[0]
@@ -173,6 +169,12 @@ def show_frame():
             response = requests.post(URL, json = json_feed)
             
             img_data = response.json()
+            if learn_check:
+                URL= server+"learn"
+                print('Getting feature map succeed')        
+                json_feed = {'face_list':tolist_img}
+                response=requests.post(URL,json=json_feed)
+                learn_check=False
         #확인 
 
             print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])

@@ -35,31 +35,26 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
 blur_check = True
-face = 0
 learn_check = False
-def blur_face_btn():
-    global blur_check
-    blur_check = True                      # 현재 blur 상태라는 것을 알림.
-    blur_btn.configure(state = "disabled") # blur처리를 누르고 난 뒤 blur 버튼 비활성화
-    learn_btn.configure(state = "disabled")
-    detect_btn.configure(state = "active") # 얼굴을 찾는 버튼 활성화
+img_data = {"name": "", "cos_sim" : 0}
+face = 0
 
-def detect_face_btn():
-    global blur_check
-    blur_check = False                      # 현재 얼굴을 찾아 rectangle로 표시하는 과정을 진행중임.
-    detect_btn.configure(state = "disabled")# detect_btn 비활성화
-    blur_btn.configure(state = "active")    # blur 처리로 다시 돌아갈 수 있도록 활성화.
-    learn_btn.configure(state = "active")   # 학습 버튼 활성화.
+def detect_face_btn(): # 학습시킬 얼굴을 찾는 버튼 이벤트 함수
+    global blur_check, learn_check
+    blur_check = False                      
+    learn_check = False
+    detect_btn.configure(state = "disabled")
+    learn_btn.configure(state = "active")   
 
 
-def learn_face_btn():                       # 학습 버튼 이벤트 함수. 서버와 연결하면 될듯.
-    global blur_check
-    global face                             # 학습 버튼을 누르게 되면 자동적으로 웹캠이 blur 처리 되고 확인할 수 있도록 변경.
-   
-    global learn_check
-    learn_check=True
+def learn_face_btn(): # 찾아낸 얼굴을 학습시키는 버튼 이벤트 함.
+    global blur_check, learn_check
+    global face, img_data                    
+    img_data = {"name": "", "cos_sim" : 0}
+    learn_check = True
     blur_check = True
-    learn_btn.configure(state = "disabled") # 학습 버튼 비활성화.
+    learn_btn.configure(state = "disabled") 
+    detect_btn.configure(state = "active")
 
 
 
@@ -88,7 +83,7 @@ learn_btn = tk.Button(root, text = "Learn", state = "disabled", bg = "green", wi
 learn_btn.place(x = 460, y = 420)
 
 # 블러 처리하는 버튼. 처음 시작할 때 블러 처리하며, 학습 하고 난 뒤 내 얼굴을 잘 학습했는지 확인할때도 사용함.
-blur_btn = tk.Button(root, text = "Blur", state = "disabled", width = 10, height = 8, command = blur_face_btn)
+blur_btn = tk.Button(root, text = "Blur", state = "disabled", width = 10, height = 8)
 blur_btn.place(x = 580, y = 420)
 
 
@@ -115,6 +110,7 @@ print('Start Recognition')
 def show_frame():
     _, cv2image = cap.read()
     global blur_check,learn_check
+    global face, img_data
     #inception_resnet 실행.
     bounding_boxes, cv2image = detector.run_mtcnn(cv2image)
     nrof_faces = bounding_boxes.shape[0]
@@ -138,14 +134,6 @@ def show_frame():
             bb[i][2] = det[i][2]
             bb[i][3] = det[i][3]
             
-
-            if blur_check: # True라면 웹캠에 나오는 모든 얼굴 blur 처리
-                cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]] = cv2.blur(cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]], (23,23))
-            else: # False라면 웹캠에 나오는 모든 얼굴 위치 좌표에 초록색 사각형 그리기
-                cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 3)
-                global face
-                face = cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]]
-            
     #여기부터 add ------------>  
             
             # if bb[i][0] <= 0 or bb[i][1] <= 0 or bb[i][2] >= len(cv2image[0]) or bb[i][3] >= len(cv2image):
@@ -161,48 +149,37 @@ def show_frame():
             scaled[i] = facenet.prewhiten(scaled[i])
             scaled_reshape.append(scaled[i].reshape(-1,input_image_size,input_image_size,3))
             
-            
-        #서버로 넘김. 
             URL = server+"video"
             tolist_img = scaled_reshape[i].tolist()
-            json_feed = {'images_placeholder': tolist_img}
+            json_feed = {'images_placeholder' : tolist_img}
+
             response = requests.post(URL, json = json_feed)
-            
             img_data = response.json()
+
+             # 학습 버튼이 눌렸을 때, 서버로 전송후 name과 similarity 수신
             if learn_check:
-                URL= server+"learn"
+                URL = server + "learn"
                 print('Getting feature map succeed')        
-                json_feed = {'face_list':tolist_img}
-                response=requests.post(URL,json=json_feed)
-                learn_check=False
-        #확인 
+                json_feed = {'face_list' : tolist_img}
+                response = requests.post(URL, json = json_feed)
+                learn_check = False
 
             print("name : ", img_data["name"], "\nsimilarity : ", img_data["cos_sim"])
 
-        
-            if img_data["cos_sim"] >= 0.5 and blur_check:
-                cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 2)    #boxing face
-                    
-                    #plot result idx under box
-                text_x = bb[i][0]
-                text_y = bb[i][3] + 20
-                cv2.putText(cv2image, "Me!", (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL,
-                            1, (255, 255, 255), thickness=1, lineType=2)
-                """
-                if button_flag[button_name.index(img_data["name"])]%2 == 0:
-                    cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (0, 255, 0), 2)    #boxing face
-                    
-                    #plot result idx under box
+            if blur_check and not learn_check: # True라면 웹캠에 나오는 모든 얼굴 blur 처리
+                if img_data["cos_sim"] >= 0.9:
+                    cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (255, 255, 255), 3)    #boxing face
+                        
                     text_x = bb[i][0]
                     text_y = bb[i][3] + 20
                     cv2.putText(cv2image, img_data["name"], (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL,
                                 1, (255, 255, 255), thickness=1, lineType=2)
                 else:
-                    cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
-                """
-            # else:  이부분이 문제였음. 아마 코사인 유사도가 0이기 때문에 이부분도 같이 실행되서 그런듯.
-            #     cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]] = cv2.blur(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2]], (23,23))
-
+                    cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]] = cv2.blur(cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]], (23,23))
+            elif not blur_check and not learn_check: # False라면 웹캠에 나오는 모든 얼굴 위치 좌표에 초록색 사각형 그리기
+                cv2.rectangle(cv2image, (bb[i][0], bb[i][1]), (bb[i][2], bb[i][3]), (255, 255, 255), 3)
+                face = cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]]
+                
     cv2image = cv2.flip(cv2image, 1)
     cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGBA)
     
@@ -225,6 +202,7 @@ def show_frame():
         face_img = ImageTk.PhotoImage(image = Image.fromarray(face))
         face_label.imgtk = face_img
         face_label.configure(image = face_img)
+
 show_frame()
 
 root.mainloop()

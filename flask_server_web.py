@@ -24,22 +24,19 @@ embedding_size = embeddings.get_shape()[1]
 feature_arr = 0
 feat = False
 
-#학습 버튼을 눌렀을 때 한명을 학습하고 그 feature를 feature_arr로 저장
+# 학습 버튼을 눌렀을 때 한명을 학습하고 그 feature를 feature_arr로 저장
 @app.route('/learn',methods=["POST"])
 def button_train():
     global feature_arr,feat
+    feature_arr = 0
     print("=========================================================================================")
     img = request.json['face_list']
     img_np =np.array(img)
-    #print(img_np)
-    #print(type(img_np))
-    #scale_img = prepro.collect_data(img_np)
-    #print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>=============================================")
-    
+
     obj = training(modeldir, img_np)
     feature_arr = obj.main_train()
     feat = True
-    print("YEAH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
     return "Success!"
 
 @app.route('/video', methods = ["POST"])
@@ -56,9 +53,6 @@ def video_feature():
     #사람이 등록되었을 경우와 등록 안되어있는 경우를 조건을 다르게 처리함
     if feat:
         img_data = facenet.check_features(feature_arr[0], embedding_arr[0])
-        #img_data["cos_sim"] = img_data["cos_sim"]
- 
-        
     else:
         img_data = {"name": "", "cos_sim" : 0}
         

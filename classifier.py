@@ -42,23 +42,7 @@ class training:
                 
                 feed_dict = {images_placeholder: image, phase_train_placeholder: False}
                 emb_array[0, : ] = sess.run(embeddings, feed_dict=feed_dict)
-                print("Test -----------------------------------")
                 
-
-                '''
-                classifier_file_name = os.path.expanduser(self.classifier_filename)
-
-                # Training Started
-                print('Training Started')
-                model = SVC(kernel='linear', probability=True)
-                model.fit(emb_array, label)
-
-                #class_names = [cls.name.replace('_', ' ') for cls in img_data]
-                class_names = [cls.name.replace('_', ' ') for cls in pre_image]
-
-                # Saving model
-                with open(classifier_file_name, 'wb') as outfile:
-                    pickle.dump((model, class_names), outfile)
-                '''              
+                
         return emb_array
 

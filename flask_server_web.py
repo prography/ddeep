@@ -24,7 +24,7 @@ embedding_size = embeddings.get_shape()[1]
 feature_arr = 0
 feat = False
 
-# 학습 버튼을 눌렀을 때 한명을 학습하고 그 feature를 feature_arr로 저장
+# after push learn_button save feature_map as feature_arr 
 @app.route('/learn',methods=["POST"])
 def button_train():
     global feature_arr,feat
@@ -50,7 +50,7 @@ def video_feature():
     embedding_arr = np.zeros((1, embedding_size))
     feed_dict = {images_placeholder: scaled_reshape, phase_train_placeholder: False}
     embedding_arr[0, :] = sess.run(embeddings, feed_dict=feed_dict)
-    #사람이 등록되었을 경우와 등록 안되어있는 경우를 조건을 다르게 처리함
+    #make condition about if person registered or not. 
     if feat:
         img_data = facenet.check_features(feature_arr[0], embedding_arr[0])
     else:
@@ -62,6 +62,6 @@ def video_feature():
     
 
 if __name__ =='__main__':
-   #app.run(host='0.0.0.0',port=5000,debug=True)
-   app.run(debug=True)
+   app.run(host='0.0.0.0',port=5000,debug=True)
+   #app.run(debug=True)
    #서버 실행하는 부분. 

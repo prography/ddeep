@@ -21,6 +21,7 @@ from functools import partial
 import mtcnn
 import json
 import requests
+import os,sys,time
 
 server = "http://127.0.0.1:5000/"
 modeldir = './model/20180402-114759.pb'
@@ -29,7 +30,7 @@ feature_list = []
 
 ########## GUI
 
-width, height = 800, 800
+width, height = 1900, 1000
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
@@ -43,7 +44,7 @@ def detect_face_btn(): # 학습시킬 얼굴을 찾는 버튼 이벤트 함수
     global blur_check, learn_check
     blur_check = False                      
     learn_check = False
-    detect_btn.configure(state = "disabled")
+    detect_btn.configure(state = "disabled",bg="lightblue")
     learn_btn.configure(state = "active")   
 
 
@@ -53,38 +54,43 @@ def learn_face_btn(): # 찾아낸 얼굴을 학습시키는 버튼 이벤트 함
     img_data = {"name": "", "cos_sim" : 0}
     learn_check = True
     blur_check = True
-    learn_btn.configure(state = "disabled") 
+    learn_btn.configure(state = "disabled",bg="lightpink") 
     detect_btn.configure(state = "active")
 
 
 
 root = tk.Tk()
-root.geometry("900x650+400+150")
+root.title("실시간 모자이크 서비스 Ddeep")
+root.geometry("900x600+20+20")
 
 # 웹캠 화면.
 mv_label = tk.Label(root)
-mv_label.pack(fill = tk.X, side = tk.TOP)
-
+mv_label.place(x=100,y=10)
 # 얼굴이 2개이상일 경우 나타나는 경고 레이블.
-warning_font = tkfont.Font(family = "궁서체", size = 20)
+warning_font = tkfont.Font(family = "굴림체", size = 10)
 warning_label = tk.Label(root, font = warning_font, fg = "red")
-warning_label.place(x = 280, y = 370)
+warning_label.place(x = 280, y = 380)
 
 # Crop한 얼굴 이미지를 띄우기 위한 레이블. detect_btn을 누르고 얼굴을 찾아냈을 때만 나타남.
 face_label = tk.Label(root)
 face_label.place(x = 100, y = 400)
 
 # 얼굴을 인식하도록 rectangle 처리 하는 버튼. 이 버튼을 누른 후에 얼굴을 학습하는 learn_btn이 활성화됨.
-detect_btn = tk.Button(root, text = "Face Detect", width = 10, height = 8, command = detect_face_btn) 
+detect_btn = tk.Button(root, text = "Face Detect", width = 12, height = 8, command = detect_face_btn) 
 detect_btn.place(x = 350, y = 420)
 
 # 얼굴을 찾고 난뒤 이 버튼을 누르면 잡아낸 얼굴을 서버로 보내도록 하면됨.
-learn_btn = tk.Button(root, text = "Learn", state = "disabled", bg = "green", width = 10, height = 8, command = learn_face_btn)
+learn_btn = tk.Button(root, text = "Learn", state = "disabled", width = 12, height = 8, command = learn_face_btn)
 learn_btn.place(x = 460, y = 420)
 
+
+filepth=os.path.join(os.getcwd(),'dd.gif')
+phot=tk.PhotoImage(file=filepth).subsample(4)
+labb=tk.Label(root,image=phot)
+labb.place(x=570,y=450)
 # 블러 처리하는 버튼. 처음 시작할 때 블러 처리하며, 학습 하고 난 뒤 내 얼굴을 잘 학습했는지 확인할때도 사용함.
-blur_btn = tk.Button(root, text = "Blur", state = "disabled", width = 10, height = 8)
-blur_btn.place(x = 580, y = 420)
+#blur_btn = tk.Button(root, text = "Blur", state = "disabled", width = 12, height = 8)
+#blur_btn.place(x = 580, y = 420)
 
 
 

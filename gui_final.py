@@ -125,7 +125,7 @@ def show_frame():
         scaled = [] 
         scaled_reshape = []
         bb = np.zeros((nrof_faces,4), dtype = np.int32)
-
+        j = 0
         for i in range(nrof_faces):
             emb_array = np.zeros((1, embedding_size))
 
@@ -136,26 +136,28 @@ def show_frame():
             
     #여기부터 add ------------>  
             
-            # if bb[i][0] <= 0 or bb[i][1] <= 0 or bb[i][2] >= len(cv2image[0]) or bb[i][3] >= len(cv2image):
-            #     print('Face is very close! 0:',bb[i][0],'    1:',bb[i][1],'      2:',bb[i][2],'          3:',bb[i][3])
-            #     continue
-                
-            cropped.append(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2], :])
-            cropped[i] = facenet.flip(cropped[i], False)
-
-            scaled.append(misc.imresize(cropped[i], (image_size, image_size), interp='bilinear'))
-            scaled[i] = cv2.resize(scaled[i], (input_image_size,input_image_size),
-                                   interpolation=cv2.INTER_CUBIC)
-            scaled[i] = facenet.prewhiten(scaled[i])
-            scaled_reshape.append(scaled[i].reshape(-1,input_image_size,input_image_size,3))
+            if bb[i][0] <= 0 or bb[i][1] <= 0 or bb[i][2] >= len(cv2image[0]) or bb[i][3] >= len(cv2image):
+                print('Face is very close! 0:',bb[i][0],'    1:',bb[i][1],'      2:',bb[i][2],'          3:',bb[i][3])
+                continue
             
+            cropped.append(cv2image[bb[i][1]:bb[i][3], bb[i][0]:bb[i][2], :])
+            cropped[j] = facenet.flip(cropped[j], False)
+
+            scaled.append(misc.imresize(cropped[j], (image_size, image_size), interp='bilinear'))
+            scaled[j] = cv2.resize(scaled[j], (input_image_size,input_image_size),
+                                   interpolation=cv2.INTER_CUBIC)
+            scaled[j] = facenet.prewhiten(scaled[j])
+            scaled_reshape.append(scaled[j].reshape(-1,input_image_size,input_image_size,3))
+
+
+
             URL = server+"video"
-            tolist_img = scaled_reshape[i].tolist()
+            tolist_img = scaled_reshape[j].tolist()
             json_feed = {'images_placeholder' : tolist_img}
 
             response = requests.post(URL, json = json_feed)
             img_data = response.json()
-
+            j+=1
              # 학습 버튼이 눌렸을 때, 서버로 전송후 name과 similarity 수신
             if learn_check:
                 URL = server + "learn"
@@ -172,7 +174,7 @@ def show_frame():
                         
                     text_x = bb[i][0]
                     text_y = bb[i][3] + 20
-                    cv2.putText(cv2image, img_data["name"], (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL,
+                    cv2.putText(cv2image, "!UOY", (text_x, text_y), cv2.FONT_HERSHEY_COMPLEX_SMALL,
                                 1, (255, 255, 255), thickness=1, lineType=2)
                 else:
                     cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]] = cv2.blur(cv2image[bb[i][1] : bb[i][3], bb[i][0] : bb[i][2]], (23,23))
